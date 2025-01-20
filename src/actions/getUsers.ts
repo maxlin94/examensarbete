@@ -1,6 +1,7 @@
 "use server";
 
-import { sanitizeUser, getFriendsByUserId, validateUser, getUsersByName } from "@/util/userUtil";
+import prisma from "@/lib/prisma";
+import { sanitizeUser, validateUser, getUsersByName, getFriendsByUserId } from "@/util/userUtil";
 
 export async function getUsers(name: string) {
     if (!name || name.trim() === "") {
@@ -9,7 +10,7 @@ export async function getUsers(name: string) {
 
     const currentUser = await validateUser();
 
-    if(!currentUser) {
+    if (!currentUser) {
         throw new Error("Unauthorized: You must be logged in");
     }
 
@@ -24,10 +25,22 @@ export async function getUsers(name: string) {
         );
 
         const sanitized = await Promise.all(
-            users.map(async (user) => ({
-                ...await sanitizeUser(user),
-                isFriend: friendSet.has(user.id),
-            }))
+            users.map(async (user) => {
+                const isFriend = friendSet.has(user.id);
+
+                const friendRequestExists = await prisma.friendRequest.findFirst({
+                    where: {
+                        userId: currentUser.id,
+                        friendId: user.id,
+                    },
+                });
+
+                return {
+                    ...await sanitizeUser(user),
+                    isFriend,
+                    friendRequestSent: !!friendRequestExists,
+                };
+            })
         );
 
         return sanitized;

@@ -5,7 +5,8 @@ type UserType = {
     password: string,
     createdAt: Date,
     updatedAt: Date,
-    isFriend: boolean
+    isFriend: boolean,
+    friendRequestSent: boolean
 }
 
 declare global {
