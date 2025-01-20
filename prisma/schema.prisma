@@ -35,6 +35,8 @@ model FriendShip {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@unique([userId, friendId])
+  @@index([userId])
+  @@index([friendId])
 }
 
 model Message {

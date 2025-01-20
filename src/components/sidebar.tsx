@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage, faBell, faUserFriends } from "@fortawesome/free-solid-svg-icons";

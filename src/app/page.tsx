@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Sidebar from "@/components/sidebar";
+import FriendPanel from "@/components/friendPanel";
 
 export default function Home() {
   const [activePage, setActivePage] = useState<"chat" | "friends">("chat");
@@ -15,8 +16,10 @@ export default function Home() {
         dropdownVisible={dropdownVisible}
         setDropdownVisible={setDropdownVisible}
       />
-      {activePage === "chat" ? <div>Chat</div> : <div>Friends</div>}
-      {dropdownVisible && <div className="absolute left-40 w-40 h-60 bg-gray-800 rounded-br-md">Dropdown</div>}
+      <div className="w-full flex flex-col items-center">
+        {activePage === "chat" ? <div>Chat</div> : <FriendPanel />}
+        {dropdownVisible && <div className="absolute left-40 w-40 h-60 bg-gray-800 rounded-br-md">Dropdown</div>}
+      </div>
     </div>
   )
 }
