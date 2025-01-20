@@ -5,6 +5,8 @@ import { signup } from "@/actions/signup";
 import { useRouter } from "next/navigation";
 import ErrorMessage from "@/components/errorMessage";
 import Input from "@/components/input";
+import Button from "@/components/customButton";
+import Form from "@/components/form";
 
 export default function SignupPage() {
     const [formData, setFormData] = useState({ name: "", lastName: "", email: "", password: "" });
@@ -34,7 +36,7 @@ export default function SignupPage() {
 
     return (
         <div className="flex flex-col justify-center w-full h-full">
-            <form action={handleSignupAction}>
+            <Form action={handleSignupAction}>
                 <Input
                     id="name"
                     name="name"
@@ -73,8 +75,8 @@ export default function SignupPage() {
                 />
                 {errors.message && <ErrorMessage>{errors.message}</ErrorMessage>}
                 {message && <p className="text-green-600 text-center">{message}</p>}
-                <button type="submit">Sign Up</button>
-            </form>
+                <Button type="submit" buttonType="signup">Sign up</Button>
+            </Form>
             <p className="text-center my-4">Already have an account?</p>
             <p className="text-center italic hover:cursor-pointer" onClick={() => router.push("/login")}>Click here to sign in</p>
         </div>
