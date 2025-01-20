@@ -1,5 +1,3 @@
-"use client"
-
 import { signOut } from "next-auth/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage, faBell, faUserFriends } from "@fortawesome/free-solid-svg-icons";
@@ -14,7 +12,7 @@ type SidebarProps = {
 
 export default function Sidebar({ activePage, setActivePage, dropdownVisible, setDropdownVisible }: SidebarProps) {
     return (
-        <div className="flex h-screen bg-gray-800 w-40 relative">
+        <div className="flex h-screen bg-gray-800 w-40 min-w-40 relative">
             <div className="flex flex-col items-center h-full bg-gray-800 w-full gap-10 py-5">
                 <div>
                     <button onClick={() => setDropdownVisible(!dropdownVisible)} className="flex-none self-center w-10 h-10 text-white hover:cursor-pointer hover:text-blue-500">
