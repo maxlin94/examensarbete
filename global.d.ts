@@ -14,9 +14,17 @@ type FriendRequestType = {
     user: UserType
 }
 
+type MessageType = {
+    content: string,
+    senderId: string,
+    receiverId: string,
+    friendshipId: string
+}
+
 declare global {
     type UserType = UserType
     type FriendRequestType = FriendRequestType
+    type MessageType = MessageType
 }
 
 export {};
