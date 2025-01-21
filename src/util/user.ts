@@ -1,6 +1,6 @@
 "use server"
 
-import prisma from "@/lib/prisma";
+import prisma from "@/util/prisma";
 import {getServerSession} from "next-auth";
 
 export async function getUsersByName(name: string, id: string) {

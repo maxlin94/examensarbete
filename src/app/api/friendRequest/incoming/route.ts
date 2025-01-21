@@ -1,8 +1,8 @@
 "use server";
 
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-import { validateUser } from "@/util/userUtil";
+import prisma from "@/util/prisma";
+import { validateUser } from "@/util/user";
 
 export async function GET() {
     try {

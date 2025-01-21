@@ -1,7 +1,7 @@
 "use server";
 
-import prisma from "@/lib/prisma";
-import { sanitizeUser, validateUser, getUsersByName, getFriendsByUserId } from "@/util/userUtil";
+import prisma from "@/util/prisma";
+import { sanitizeUser, validateUser, getUsersByName, getFriendsByUserId } from "@/util/user";
 
 export async function getUsers(name: string) {
     if (!name || name.trim() === "") {

@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-import prisma from "@/lib/prisma";
+import prisma from "@/util/prisma";
 import { ZodError, ZodIssue } from "zod";
 import loginSchema from "@/schemas/login";
 
