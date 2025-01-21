@@ -30,8 +30,8 @@ export async function getUsers(name: string) {
 
                 const friendRequestExists = await prisma.friendRequest.findFirst({
                     where: {
-                        userId: currentUser.id,
-                        friendId: user.id,
+                        senderId: currentUser.id,
+                        receiverId: user.id,
                     },
                 });
 
