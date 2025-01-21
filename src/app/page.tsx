@@ -24,7 +24,7 @@ export default function Home() {
       }
     }
     fetchFriendRequests();
-  }, []);
+  }, [dropdownVisible]);
 
   return (
     <div className="flex min-h-screen w-full relative">
