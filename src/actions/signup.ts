@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@/lib/prisma";
+import prisma from "@/util/prisma";
 import bcrypt from "bcrypt";
 import signupFormSchema from "@/schemas/signup";
 import { ZodError, ZodIssue } from "zod";

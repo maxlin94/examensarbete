@@ -1,7 +1,7 @@
 import { signOut } from "next-auth/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage, faBell, faUserFriends } from "@fortawesome/free-solid-svg-icons";
-import Button from "./customButton";
+import Button from "./shared/customButton";
 
 type SidebarProps = {
     activePage: "chat" | "friends",

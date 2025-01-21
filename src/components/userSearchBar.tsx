@@ -1,5 +1,6 @@
 import React from 'react';
 import { getUsers } from '@/actions/getUsers';
+import Input from '@/components/shared/input';
 
 export default function UserSearchBar({ setFriends }: { setFriends: (_: UserType[]) => void }) {
 
@@ -17,9 +18,8 @@ export default function UserSearchBar({ setFriends }: { setFriends: (_: UserType
     }
     return (
         <div className="flex flex-col items-center w-full p-5">
-            <input
+            <Input
                 onChange={(e) => handleChange(e)}
-                className="px-2 w-60 h-10 bg-gray-800 text-white border-b-2 border-gray-600 rounded-md"
                 type="text"
                 placeholder="Search for people"
             />

@@ -14,22 +14,23 @@ model User {
   password         String
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
-  asFriend         FriendShip[]    @relation("UserAsFriend")
-  friends          FriendShip[]    @relation("UserFriends")
+  asFriend         Friendship[]    @relation("UserAsFriend")
+  friends          Friendship[]    @relation("UserFriends")
   receivedMessages Message[]       @relation("ReceiverMessages")
   sentMessages     Message[]       @relation("SenderMessages")
   sentRequests     FriendRequest[] @relation("SentRequests")
   receivedRequests FriendRequest[] @relation("ReceivedRequests")
 }
 
-model FriendShip {
-  id        String   @id @default(cuid())
+model Friendship {
+  id        String    @id @default(cuid())
   userId    String
   friendId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  friend    User     @relation("UserAsFriend", fields: [friendId], references: [id])
-  user      User     @relation("UserFriends", fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  friend    User      @relation("UserAsFriend", fields: [friendId], references: [id])
+  user      User      @relation("UserFriends", fields: [userId], references: [id])
+  messages  Message[]
 
   @@unique([userId, friendId])
   @@index([userId])
@@ -37,13 +38,15 @@ model FriendShip {
 }
 
 model Message {
-  id         String   @id @default(cuid())
-  content    String
-  senderId   String
-  receiverId String
-  createdAt  DateTime @default(now())
-  receiver   User     @relation("ReceiverMessages", fields: [receiverId], references: [id])
-  sender     User     @relation("SenderMessages", fields: [senderId], references: [id])
+  id           String     @id @default(cuid())
+  content      String
+  senderId     String
+  receiverId   String
+  createdAt    DateTime   @default(now())
+  friendshipId String
+  friendship   Friendship @relation(fields: [friendshipId], references: [id])
+  receiver     User       @relation("ReceiverMessages", fields: [receiverId], references: [id])
+  sender       User       @relation("SenderMessages", fields: [senderId], references: [id])
 
   @@index([senderId, receiverId, createdAt])
 }

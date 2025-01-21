@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Sidebar from "@/components/sidebar";
 import FriendPanel from "@/components/friendPanel";
 import FriendRequest from "@/components/friendRequest";
+import ChatPanel from "@/components/chatPanel";
 
 export default function Home() {
   const [friendRequests, setFriendRequests] = useState([]);
@@ -27,7 +28,7 @@ export default function Home() {
   }, [dropdownVisible]);
 
   return (
-    <div className="flex min-h-screen w-full relative">
+    <div className="flex min-h-screen max-h-screen w-full relative">
       <Sidebar
         activePage={activePage}
         setActivePage={setActivePage}
@@ -35,11 +36,12 @@ export default function Home() {
         setDropdownVisible={setDropdownVisible}
       />
       <div className="w-full flex flex-col items-center">
-        {activePage === "chat" ? <div>Chat</div> : <FriendPanel />}
-        {dropdownVisible && <ul className="absolute left-40 w-[350px] h-[400px] bg-gray-800 rounded-br-md">
-          {friendRequests.length > 0 && friendRequests.map((request: FriendRequestType, index) => (
+        {activePage === "chat" ? <ChatPanel/> : <FriendPanel />}
+        {dropdownVisible && <ul className="absolute left-40 w-[350px] min-h-[300px] max-h-screen bg-gray-800 rounded-br-md">
+          {friendRequests.length > 0 ? friendRequests.map((request: FriendRequestType, index) => (
             <FriendRequest key={index} request={request}/>
-          ))}
+          )) : <li className="text-white p-2 text-center">No notifications</li>}
+
         </ul>}
       </div>
     </div>

@@ -1,6 +1,6 @@
 "use server"
 
-import prisma from "@/lib/prisma";
+import prisma from "@/util/prisma";
 import {getServerSession} from "next-auth";
 
 export async function getUsersByName(name: string, id: string) {
@@ -19,7 +19,7 @@ export async function getUsersByName(name: string, id: string) {
 }
 
 export async function getFriendsByUserId(id: string) {
-    return prisma.friendShip.findMany({
+    return prisma.friendship.findMany({
         where: {
             OR: [
                 { userId: id },

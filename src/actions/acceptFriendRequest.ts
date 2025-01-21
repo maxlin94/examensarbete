@@ -1,9 +1,9 @@
 "use server";
 
-import prisma from "@/lib/prisma";
-import { validateUser } from "@/util/userUtil";
+import prisma from "@/util/prisma";
+import { validateUser } from "@/util/user";
 
-export default async function acceptFriendRequestAction(id: string) {
+export default async function acceptFriendRequest(id: string) {
     try {
         const user = await validateUser();
         if (!user) {
@@ -24,7 +24,7 @@ export default async function acceptFriendRequestAction(id: string) {
             throw new Error("You are not authorized to accept this friend request.");
         }
 
-        await prisma.friendShip.create({
+        await prisma.friendship.create({
             data: {
                 userId: user.id,
                 friendId: friendRequest.senderId,

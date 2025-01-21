@@ -1,9 +1,9 @@
 "use server";
 
-import prisma from "@/lib/prisma";
-import { validateUser } from "@/util/userUtil";
+import prisma from "@/util/prisma";
+import { validateUser } from "@/util/user";
 
-export default async function acceptFriendRequestAction(id: string) {
+export default async function declineFriendRequest(id: string) {
     try {
         const user = await validateUser();
         if (!user) {
