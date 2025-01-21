@@ -12,8 +12,8 @@ export async function sendFriendRequest(friendId: string) {
 
         const existingRequest = await prisma.friendRequest.findFirst({
             where: {
-                userId: user.id,
-                friendId: friendId,
+                receiverId: friendId,
+                senderId: user.id,
             },
         });
 
@@ -23,8 +23,8 @@ export async function sendFriendRequest(friendId: string) {
 
         await prisma.friendRequest.create({
             data: {
-                userId: user.id,
-                friendId: friendId,
+                receiverId: friendId,
+                senderId: user.id,
             },
         });
     }

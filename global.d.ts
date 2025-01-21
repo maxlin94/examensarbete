@@ -9,8 +9,14 @@ type UserType = {
     friendRequestSent: boolean
 }
 
+type FriendRequestType = {
+    id: string,
+    user: UserType
+}
+
 declare global {
     type UserType = UserType
+    type FriendRequestType = FriendRequestType
 }
 
 export {};
