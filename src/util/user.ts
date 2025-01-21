@@ -19,7 +19,7 @@ export async function getUsersByName(name: string, id: string) {
 }
 
 export async function getFriendsByUserId(id: string) {
-    return prisma.friendShip.findMany({
+    return prisma.friendship.findMany({
         where: {
             OR: [
                 { userId: id },

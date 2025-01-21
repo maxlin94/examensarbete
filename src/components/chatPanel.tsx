@@ -9,6 +9,7 @@ export default function ChatPanel() {
   const [friends, setFriends] = useState<UserType[]>([]);
   const [selectedFriend, setSelectedFriend] = useState<UserType>(null);
   const [messages, setMessages] = useState<MessageType[]>([]);
+  const [messageLoading, setMessageLoading] = useState(false);
 
   useEffect(() => {
     async function fetchFriends() {
@@ -46,6 +47,7 @@ export default function ChatPanel() {
   }, [selectedFriend]);
 
   const sendMessage = async () => {
+    setMessageLoading(true);
     if (input.trim() && selectedFriend) {
       const message = {
         content: input,
@@ -58,6 +60,7 @@ export default function ChatPanel() {
       setMessages((prevMessages) => [...prevMessages, message]);
       setInput('');
     }
+    setMessageLoading(false);
   };
 
   return (
@@ -67,13 +70,16 @@ export default function ChatPanel() {
           <div
             key={friend.id}
             className={`p-2 cursor-pointer ${selectedFriend?.id === friend.id ? 'bg-slate-500' : ''}`}
-            onClick={() => setSelectedFriend(friend)}
+            onClick={() => {
+              setMessages([]);
+              setSelectedFriend(friend)
+            }}
           >
             {friend.name}
           </div>
         ))}
       </div>
-      <div className="flex flex-col w-3/4 max-h-[90%] p-4 rounded-md">
+      <div className="flex flex-col w-3/4 p-4 rounded-md">
         <div className="flex-grow rounded-md overflow-y-auto 
         [&::-webkit-scrollbar]:w-2 
         [&::-webkit-scrollbar-track]:rounded-full 
@@ -94,11 +100,12 @@ export default function ChatPanel() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') sendMessage();
+                if (e.key === 'Enter' && !messageLoading) sendMessage();
               }}
             />
             <button
-              className="p-2 bg-blue-500 text-white rounded-r-md"
+              disabled={messageLoading}
+              className={`p-2 bg-blue-500 text-white rounded-r-md ${messageLoading && 'opacity-50'}`}
               onClick={sendMessage}>
               Send
             </button>

@@ -14,15 +14,15 @@ model User {
   password         String
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
-  asFriend         FriendShip[]    @relation("UserAsFriend")
-  friends          FriendShip[]    @relation("UserFriends")
+  asFriend         Friendship[]    @relation("UserAsFriend")
+  friends          Friendship[]    @relation("UserFriends")
   receivedMessages Message[]       @relation("ReceiverMessages")
   sentMessages     Message[]       @relation("SenderMessages")
   sentRequests     FriendRequest[] @relation("SentRequests")
   receivedRequests FriendRequest[] @relation("ReceivedRequests")
 }
 
-model FriendShip {
+model Friendship {
   id        String    @id @default(cuid())
   userId    String
   friendId  String
@@ -43,8 +43,8 @@ model Message {
   senderId     String
   receiverId   String
   createdAt    DateTime   @default(now())
-  friendShipId String
-  friendShip   FriendShip @relation(fields: [friendShipId], references: [id])
+  friendshipId String
+  friendship   Friendship @relation(fields: [friendshipId], references: [id])
   receiver     User       @relation("ReceiverMessages", fields: [receiverId], references: [id])
   sender       User       @relation("SenderMessages", fields: [senderId], references: [id])
 

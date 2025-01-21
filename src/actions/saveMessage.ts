@@ -8,7 +8,7 @@ export async function saveMessage(message: MessageType) {
     if (!user) {
         return;
     }
-    const friendship = await prisma.friendShip.findFirst({
+    const friendship = await prisma.friendship.findFirst({
         where: {
             OR: [
                 {
@@ -29,7 +29,7 @@ export async function saveMessage(message: MessageType) {
             content: message.content,
             senderId: user.id,
             receiverId: message.receiverId,
-            friendShipId: friendship.id,
+            friendshipId: friendship.id,
         },
     });
 }

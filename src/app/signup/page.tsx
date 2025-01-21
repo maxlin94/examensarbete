@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import { signup } from "@/actions/signup";
 import { useRouter } from "next/navigation";
-import ErrorMessage from "@/components/errorMessage";
-import Input from "@/components/input";
-import Button from "@/components/customButton";
-import Form from "@/components/form";
+import ErrorMessage from "@/components/shared/errorMessage";
+import Input from "@/components/shared/input";
+import Button from "@/components/shared/customButton";
+import Form from "@/components/shared/form";
 
 export default function SignupPage() {
     const [formData, setFormData] = useState({ name: "", lastName: "", email: "", password: "" });

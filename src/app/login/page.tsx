@@ -2,11 +2,11 @@
 
 import {signIn} from "next-auth/react";
 import React, {useState} from "react";
-import Input from "@/components/input";
-import Form from "@/components/form";
+import Input from "@/components/shared/input";
+import Form from "@/components/shared/form";
 import {useRouter} from "next/navigation"
-import Button from "@/components/customButton";
-import ErrorMessage from "@/components/errorMessage";
+import Button from "@/components/shared/customButton";
+import ErrorMessage from "@/components/shared/errorMessage";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");

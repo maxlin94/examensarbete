@@ -8,6 +8,7 @@ export async function GET() {
     try {
         const user = await validateUser();
         const friendRequests = await prisma.friendRequest.findMany({
+            
             where: {
                 receiverId: user.id,
             },

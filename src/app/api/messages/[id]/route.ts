@@ -7,7 +7,7 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
         const user = await validateUser();
         const { id } = await params;
         if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-        const friendship = await prisma.friendShip.findFirst({
+        const friendship = await prisma.friendship.findFirst({
             where: {
                 id: id
             },
@@ -22,7 +22,7 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
         }
         const messages = await prisma.message.findMany({
             where: {
-                friendShipId: friendship.id
+                friendshipId: friendship.id
             },
             orderBy: {
                 createdAt: "asc"

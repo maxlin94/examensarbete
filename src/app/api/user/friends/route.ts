@@ -8,7 +8,7 @@ export async function GET() {
     try {
         const user = await validateUser();
         if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-        const friendships = await prisma.friendShip.findMany({
+        const friendships = await prisma.friendship.findMany({
             where: {
                 OR: [{ userId: user.id }, { friendId: user.id }],
             },
