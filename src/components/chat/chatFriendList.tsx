@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 type FriendListProps = {
     selectedFriend: UserDto | null;
@@ -9,6 +10,7 @@ type FriendListProps = {
 
 export default function FriendList({ selectedFriend, setSelectedFriend, messages, setMessages }: FriendListProps) {
     const [friends, setFriends] = useState<UserDto[]>([]);
+    const session = useSession();
 
     useEffect(() => {
         async function fetchFriends() {
@@ -18,7 +20,6 @@ export default function FriendList({ selectedFriend, setSelectedFriend, messages
                     throw new Error("Error fetching friends");
                 }
                 const data = await response.json();
-                console.log(data)
                 setFriends(data);
             } catch (error) {
                 console.log(error);
@@ -36,12 +37,7 @@ export default function FriendList({ selectedFriend, setSelectedFriend, messages
                     const lastMessage = messages[messages.length - 1];
                     return {
                         ...friend,
-                        lastMessage: lastMessage
-                            ? {
-                                ...lastMessage,
-                                sentByUser: lastMessage.receiverId === selectedFriend.id,
-                            }
-                            : friend.lastMessage,
+                        lastMessage
                     };
                 }
                 return friend;
@@ -56,16 +52,12 @@ export default function FriendList({ selectedFriend, setSelectedFriend, messages
                     key={friend.id}
                     className={`p-2 text-lg cursor-pointer ${selectedFriend?.id === friend.id ? 'bg-slate-500' : ''}`}
                     onClick={() => {
-                        if(friend.id !== selectedFriend?.id) {
-                            setMessages([]);
-                        }
-                        setSelectedFriend(friend)
-                    }}
+                        if(friend.id !== selectedFriend?.id) setSelectedFriend(friend)}}
                 >
                     {friend.name}
                     {friend.lastMessage &&
                         <div className="text-sm italic">
-                            {friend.lastMessage.sentByUser ? "You: " : "Them: "}
+                            {friend.lastMessage.senderId === session?.data?.user.id ? "You: " : "Them: "}
                             {friend.lastMessage.content}
                         </div>}
                 </div>

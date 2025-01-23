@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import ChatInput from '@/components/chat/chatInput';
 import socket from '@/util/socket';
 import { saveMessage } from '@/actions/saveMessage';
+import { useSession } from 'next-auth/react';
 
 type ChatBoxProps = {
   selectedFriend: UserDto | null;
@@ -12,7 +13,7 @@ type ChatBoxProps = {
 export default function ChatBox({ selectedFriend, messages, setMessages, }: ChatBoxProps) {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [messagesCache, setMessagesCache] = useState<Map<string, MessageType[]>>(new Map());
-
+  const session = useSession();
 
   useEffect(() => {
     const friendId = selectedFriend?.id;
@@ -53,7 +54,7 @@ export default function ChatBox({ selectedFriend, messages, setMessages, }: Chat
       content: message,
       friendshipId: selectedFriend?.friendshipId || '',
       receiverId: selectedFriend?.id || '',
-      senderId: socket.id || ''
+      senderId: session.data?.user.id || ''
     };
     socket.emit('privateMessage', messageObj);
     await saveMessage(messageObj);
@@ -81,7 +82,7 @@ export default function ChatBox({ selectedFriend, messages, setMessages, }: Chat
         [&::-webkit-scrollbar-thumb]:rounded-full 
         [&::-webkit-scrollbar-thumb]:bg-gray-800">
         {messages.map((msg: MessageType, index) => (
-          <div key={index} className={`m-2 relative rounded-md ${msg.receiverId === selectedFriend?.id ? 'text-right' : 'text-left'}`}>
+          <div key={index} className={`m-2 relative rounded-md ${msg.senderId === session.data?.user.id ? 'text-right' : 'text-left'}`}>
             <span className="inline-block p-2 rounded-md bg-slate-800 break-all">{msg.content}</span>
           </div>
         ))}
