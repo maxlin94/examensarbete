@@ -3,7 +3,11 @@ import acceptFriendRequest from "@/actions/acceptFriendRequest"
 import declineFriendRequest from "@/actions/declineFriendRequest"
 import Button from "@/components/shared/customButton"
 
-export default function FriendRequest({ request }: { request: FriendRequestType }) {
+type FriendRequestProps = {
+    request: { id: string, user: UserDto }
+}
+
+export default function FriendRequest({ request }: FriendRequestProps) {
     const [requestStatus, setRequestStatus] = useState(new Map())
     const handleAccept = async (id: string) => {
         try {
@@ -35,7 +39,7 @@ export default function FriendRequest({ request }: { request: FriendRequestType 
         <>
             {frStatus &&
                 <li className={`flex items-center justify-between bg-slate-700 rounded-md w-fit p-2 m-2 gap-2 text-wrap break-all`}>
-                    <p>You {frStatus} {request.user.name}'s friend request</p>
+                    <p>You {`${frStatus} ${request.user.name}'s`} friend request</p>
                 </li>
             }
             {!frStatus &&

@@ -7,28 +7,27 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
         const user = await validateUser();
         const { id } = await params;
         if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-        const friendship = await prisma.friendship.findFirst({
+        const messages = await prisma.friendship.findFirst({
             where: {
-                id: id
+                OR: [
+                    { userId: user.id, friendId: id },
+                    { userId: id, friendId: user.id }
+                ]
             },
-            include: {
-                user: true,
-                friend: true,
-            },
-        });
-        if(!friendship) return NextResponse.json({ message: "Not found" }, { status: 404 });
-        if(user.id !== friendship.user.id && user.id !== friendship.friend.id) {
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-        }
-        const messages = await prisma.message.findMany({
-            where: {
-                friendshipId: friendship.id
-            },
-            orderBy: {
-                createdAt: "asc"
+            select: {
+                messages: {
+                    orderBy: {
+                        createdAt: 'asc'
+                    },
+                    select: {
+                        content: true,
+                        senderId: true,
+                        receiverId: true
+                    }
+                }
             }
         });
-        return NextResponse.json(messages);
+        return NextResponse.json(messages?.messages);
     } catch (e) {
         console.error("Error fetching users:", e);
         return NextResponse.json({ message: "Internal server error" }, { status: 500 });

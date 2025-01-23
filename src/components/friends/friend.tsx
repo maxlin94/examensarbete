@@ -3,10 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPlus, faMessage } from "@fortawesome/free-solid-svg-icons";
 import { sendFriendRequest } from "@/actions/sendFriendRequest";
 import { Tooltip } from 'react-tooltip';
+import Image from 'next/image';
 import 'react-tooltip/dist/react-tooltip.css';
 
 type FriendProps = {
-    user: UserType;
+    user: UserDto;
 }
 
 export default function Friend({ user }: FriendProps) {
@@ -23,19 +24,21 @@ export default function Friend({ user }: FriendProps) {
 
     const isRequestSent = sentRequests.includes(user.id);
     return (
-        <div className="flex justify-evenly items-center w-full p-5">
-            <img src="/images/placeholder.png" className="w-10 h-10 rounded-full" />
-            <p>{user.name}</p>
+        <div className="flex justify-between items-center w-full p-5 bg-slate-600 rounded-md gap-2">
+            <div className="flex items-center gap-2">
+                <Image src="/images/placeholder.png" alt="User avatar" width="40" height="40" className="rounded-full" />
+                <span>{user.name}</span>
+            </div>
             {user.isFriend ?
                 <button className="text-blue-500">
                     <FontAwesomeIcon icon={faMessage} />
                 </button> :
                 <button
-                    disabled={user.friendRequestSent || isRequestSent}
+                    disabled={user.isFriendRequestSent || isRequestSent}
                     onClick={() => handleClick(user.id)}
-                    className={`${user.friendRequestSent || isRequestSent ? "text-gray-300" : "text-blue-500"}`}
+                    className={`${user.isFriendRequestSent || isRequestSent ? "text-gray-300" : "text-blue-500"}`}
                     data-tooltip-id={`tooltip-${user.id}`}
-                    data-tooltip-content={isRequestSent || user.friendRequestSent ? 'Friend request already sent' : ''}>
+                    data-tooltip-content={isRequestSent || user.isFriendRequestSent ? 'Friend request already sent' : ''}>
                     <FontAwesomeIcon icon={faUserPlus} />
                 </button>
             }

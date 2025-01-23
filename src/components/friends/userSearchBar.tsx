@@ -2,10 +2,13 @@ import React from 'react';
 import { getUsers } from '@/actions/getUsers';
 import Input from '@/components/shared/input';
 
-export default function UserSearchBar({ setFriends }: { setFriends: (_: UserType[]) => void }) {
+type UserSearchBarProps = {
+    setFriends: (_: UserDto[]) => void;
+}
 
+export default function UserSearchBar({ setFriends }: UserSearchBarProps) {
     const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        if(e.target.value.length < 2) {
+        if (e.target.value.length < 2) {
             setFriends([]);
             return;
         };
