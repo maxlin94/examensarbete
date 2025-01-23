@@ -1,9 +1,9 @@
 "use server";
 
 import prisma from "@/util/prisma";
-import { sanitizeUser, validateUser, getUsersByName, getFriendsByUserId } from "@/util/user";
+import { validateUser, getUsersByName, getFriendsByUserId } from "@/util/user";
 
-export async function getUsers(name: string) {
+export async function getUsers(name: string): Promise<UserDto[]> {
     if (!name || name.trim() === "") {
         throw new Error("Name cannot be blank");
     }
@@ -34,17 +34,19 @@ export async function getUsers(name: string) {
                         receiverId: user.id,
                     },
                 });
-
+                const { name, id } = user;
                 return {
-                    ...await sanitizeUser(user),
+                    name,
+                    id,
                     isFriend,
-                    friendRequestSent: !!friendRequestExists,
+                    isFriendRequestSent: !!friendRequestExists,
                 };
             })
         );
 
         return sanitized;
     } catch (e) {
+        console.log(e);
         throw new Error("Internal server error");
     }
 }
