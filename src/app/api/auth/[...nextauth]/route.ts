@@ -1,9 +1,27 @@
-import NextAuth from "next-auth";
+import NextAuth, { Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import prisma from "@/util/prisma";
 import { ZodError, ZodIssue } from "zod";
 import loginSchema from "@/schemas/login";
+import { JWT } from "next-auth/jwt";
+
+declare module "next-auth" {
+    interface Session {
+        user: {
+            id: string;
+            name: string;
+            email: string;
+            image: string;
+        };
+    }
+}
+
+declare module "next-auth/jwt" {
+    interface JWT {
+        id: string;
+    }
+}
 
 export const authOptions = {
     providers: [
@@ -52,6 +70,21 @@ export const authOptions = {
             },
         }),
     ],
+    callbacks: {
+        async jwt({ token, user }: { token: JWT; user: User }) {
+            if (user) {
+                token.id = user.id;
+            }
+            return token;
+        },
+
+        async session({ session, token }: { session: Session; token: JWT }) {
+            if (session && session.user) {
+                session.user.id = token.id;
+            }
+            return session;
+        },
+    },
     pages: {
         signIn: "/login",
     },
