@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/sidebar";
-import FriendPanel from "@/components/friendPanel";
-import FriendRequest from "@/components/friendRequest";
-import ChatPanel from "@/components/chatPanel";
+import FriendPanel from "@/components/friends/friendPanel";
+import FriendRequest from "@/components/friends/friendRequest";
+import ChatPanel from "@/components/chat/chatPanel";
 
 export default function Home() {
   const [friendRequests, setFriendRequests] = useState([]);
@@ -20,7 +20,7 @@ export default function Home() {
         }
         const data = await response.json();
         setFriendRequests(data);
-      } catch (error: any) {
+      } catch (error) {
         console.log(error);
       }
     }
@@ -38,7 +38,7 @@ export default function Home() {
       <div className="w-full flex flex-col items-center">
         {activePage === "chat" ? <ChatPanel/> : <FriendPanel />}
         {dropdownVisible && <ul className="absolute left-40 w-[350px] min-h-[300px] max-h-screen bg-gray-800 rounded-br-md">
-          {friendRequests.length > 0 ? friendRequests.map((request: FriendRequestType, index) => (
+          {friendRequests.length > 0 ? friendRequests.map((request, index) => (
             <FriendRequest key={index} request={request}/>
           )) : <li className="text-white p-2 text-center">No notifications</li>}
 

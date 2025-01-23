@@ -21,6 +21,7 @@ export async function saveMessage(message: MessageType) {
         },
         select: {
             id: true,
+            messages: true
         },
     });
     if (!friendship) return;

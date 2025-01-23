@@ -34,11 +34,6 @@ export async function getFriendsByUserId(id: string) {
     });
 }
 
-export async function sanitizeUser(user: UserType) {
-    const { name, id } = user;
-    return { name, id }
-}
-
 export async function validateUser() {
     const session = await getServerSession();
     if (!session || !session.user || !session.user.email) {
