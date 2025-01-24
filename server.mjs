@@ -26,7 +26,7 @@ app.prepare().then(() => {
         });
 
         socket.on("privateMessage", async ({ content, senderId, receiverId, friendshipId }) => {
-            const message = { content, senderId };
+            const message = { content, senderId, receiverId, friendshipId };
             socket.to(friendshipId).emit("privateMessage", message);
         });
 
