@@ -1,8 +1,8 @@
 import { create } from 'zustand'
 
 type StoreState = {
-    selectedFriend: UserDto | null;
-    setSelectedFriend: (friendId: UserDto | null) => void;
+    selectedFriend: FriendType | null;
+    setSelectedFriend: (friendId: FriendType | null) => void;
 
     messages: Map<string, MessageType[]>;
     addMessage: (message: MessageType) => void;
@@ -14,14 +14,14 @@ type StoreState = {
     friendRequests: FriendRequestType[];
     fetchFriendRequests: () => void;
 
-    friends: UserDto[];
-    setFriends: (friends: UserDto[]) => void;
+    friends: FriendType[];
+    setFriends: (friends: FriendType[]) => void;
     fetchFriends: () => void;
 };
 
 const useStore = create<StoreState>((set) => ({
     selectedFriend: null,
-    setSelectedFriend: (friend: UserDto | null) => set({ selectedFriend: friend }),
+    setSelectedFriend: (friend: FriendType | null) => set({ selectedFriend: friend }),
 
     messages: new Map(),
     addMessage: (message: MessageType) => {

@@ -3,18 +3,18 @@ import { getUsers } from '@/actions/getUsers';
 import Input from '@/components/shared/input';
 
 type UserSearchBarProps = {
-    setFriends: (_: UserDto[]) => void;
+    setUsers: (_: FriendType[]) => void;
 }
 
-export default function UserSearchBar({ setFriends }: UserSearchBarProps) {
+export default function UserSearchBar({ setUsers }: UserSearchBarProps) {
     const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.value.length < 2) {
-            setFriends([]);
+            setUsers([]);
             return;
         };
         try {
             const users = await getUsers(e.target.value);
-            setFriends(users);
+            setUsers(users);
         } catch (e) {
             console.error('Error fetching users:', e);
         }

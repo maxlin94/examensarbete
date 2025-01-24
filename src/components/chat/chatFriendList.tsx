@@ -6,13 +6,9 @@ import useStore from '@/store';
 export default function FriendList() {
     const { messages, selectedFriend, setSelectedFriend, friends, fetchFriends } = useStore();
     const session = useSession();
-
     useEffect(() => {
         fetchFriends();
-        return () => {
-            setSelectedFriend(null)
-         }
-    }, [fetchFriends, setSelectedFriend]);
+    }, [fetchFriends]);
 
     const getLastMessage = (id: string) => {
         const message = messages.get(id)?.slice(-1)[0] || friends.find(friend => friend.friendshipId === id)?.lastMessage
@@ -24,7 +20,7 @@ export default function FriendList() {
 
     return (
         <div className="flex flex-col w-1/4 min-w-fit border-2 border-slate-500 h-full rounded-md gap-1">
-            {friends.map((friend: UserDto) => (
+            {friends.map((friend: FriendType) => (
                 <div
                     key={friend.id}
                     className={`mx-1 mt-1 p-2 text-lg cursor-pointer text-wrap break-all rounded-md ${selectedFriend?.id === friend.id ? 'bg-slate-500' : 'bg-slate-800'}`}

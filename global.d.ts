@@ -1,25 +1,21 @@
 declare global {
-    type UserType = {
+    type UserDto = {
         id: string;
         name: string;
-        email: string;
-        password: string;
-        createdAt: Date;
-        updatedAt: Date;
-    };
+    }
 
-    type UserDto = {
+    type FriendType = {
         name: string;
         id: string;
         isFriend?: boolean;
         isFriendRequestSent?: boolean;
         friendshipId?: string;
         lastMessage?: MessageType | null;
-    };
+    }
 
     type FriendRequestType = {
         id: string;
-        user: UserType;
+        user: UserDto;
     };
 
     type MessageType = {

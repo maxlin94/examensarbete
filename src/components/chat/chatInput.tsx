@@ -11,6 +11,7 @@ export default function ChatInput() {
     const session = useSession();
 
     const sendMessage = async (message: string) => {
+        if(!message.trim()) return;
         setMessageLoading(true);
         const messageObj = {
             content: message,
