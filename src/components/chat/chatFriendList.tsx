@@ -1,31 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import useStore from '@/store';
 
 
 export default function FriendList() {
-    const [friends, setFriends] = useState<UserDto[]>([]);
-    const { messages, selectedFriend, setSelectedFriend } = useStore();
+    const { messages, selectedFriend, setSelectedFriend, friends, fetchFriends } = useStore();
     const session = useSession();
 
-
     useEffect(() => {
-        async function fetchFriends() {
-            try {
-                const response = await fetch('/api/friends');
-                if (!response.ok) {
-                    throw new Error("Error fetching friends");
-                }
-                const data = await response.json();
-                setFriends(data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
         fetchFriends();
-    }, []);
+        return () => {
+            setSelectedFriend(null)
+         }
+    }, [fetchFriends, setSelectedFriend]);
 
-    const fetchLastMessage = (id: string) => {
+    const getLastMessage = (id: string) => {
         const message = messages.get(id)?.slice(-1)[0] || friends.find(friend => friend.friendshipId === id)?.lastMessage
         if (!message) return
         return (
@@ -34,19 +23,19 @@ export default function FriendList() {
     }
 
     return (
-        <div className="flex flex-col w-1/4 min-w-fit border-2 border-slate-500 h-full rounded-md">
+        <div className="flex flex-col w-1/4 min-w-fit border-2 border-slate-500 h-full rounded-md gap-1">
             {friends.map((friend: UserDto) => (
                 <div
                     key={friend.id}
-                    className={`p-2 text-lg cursor-pointer text-wrap break-all ${selectedFriend?.id === friend.id ? 'bg-slate-500' : ''}`}
+                    className={`mx-1 mt-1 p-2 text-lg cursor-pointer text-wrap break-all rounded-md ${selectedFriend?.id === friend.id ? 'bg-slate-500' : 'bg-slate-800'}`}
                     onClick={() => {
                         if (friend.id !== selectedFriend?.id) setSelectedFriend(friend)
                     }}
                 >
                     {friend.name.length > 20 ? friend.name.slice(0, 20) + "..." : friend.name}
-                    {friend.lastMessage &&
+                    {friend.friendshipId && getLastMessage(friend.friendshipId) &&
                         <div className="text-sm italic">
-                            {friend.friendshipId && fetchLastMessage(friend.friendshipId)}
+                            {friend.friendshipId && getLastMessage(friend.friendshipId)}
                         </div>}
                 </div>
             ))}
