@@ -3,6 +3,7 @@ import ChatInput from '@/components/chat/chatInput';
 import socket from '@/util/socket';
 import { saveMessage } from '@/actions/saveMessage';
 import { useSession } from 'next-auth/react';
+import ScrollWrapper from '@/components/shared/scrollWrapper';
 
 type ChatBoxProps = {
   selectedFriend: UserDto | null;
@@ -75,19 +76,14 @@ export default function ChatBox({ selectedFriend, messages, setMessages, }: Chat
 
   return (
     <div className="flex flex-col w-3/4 p-4 rounded-md">
-      <div className="flex-grow rounded-md overflow-y-auto 
-        [&::-webkit-scrollbar]:w-2 
-        [&::-webkit-scrollbar-track]:rounded-full 
-        [&::-webkit-scrollbar-track]:bg-gray-400 
-        [&::-webkit-scrollbar-thumb]:rounded-full 
-        [&::-webkit-scrollbar-thumb]:bg-gray-800">
+      <ScrollWrapper>
         {messages.map((msg: MessageType, index) => (
           <div key={index} className={`m-2 relative rounded-md ${msg.senderId === session.data?.user.id ? 'text-right' : 'text-left'}`}>
             <span className="inline-block p-2 rounded-md bg-slate-800 break-all">{msg.content}</span>
           </div>
         ))}
         <div ref={messagesEndRef} />
-      </div>
+      </ScrollWrapper>
       {selectedFriend && (
         <ChatInput sendMessage={sendMessage} />
       )}
