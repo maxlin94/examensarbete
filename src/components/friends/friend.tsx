@@ -5,6 +5,7 @@ import { sendFriendRequest } from "@/actions/sendFriendRequest";
 import { Tooltip } from 'react-tooltip';
 import Image from 'next/image';
 import 'react-tooltip/dist/react-tooltip.css';
+import socket from "@/util/socket";
 
 type FriendProps = {
     user: UserDto;
@@ -17,6 +18,7 @@ export default function Friend({ user }: FriendProps) {
         try {
             await sendFriendRequest(id);
             setSentRequests((prev) => [...prev, id]);
+            socket.emit('friendRequest', id);
         } catch (error) {
             console.error(error);
         }
