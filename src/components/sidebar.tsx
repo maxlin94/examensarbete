@@ -4,19 +4,40 @@ import { faMessage, faBell, faUserFriends } from "@fortawesome/free-solid-svg-ic
 import Button from "./shared/customButton";
 import { useState } from "react";
 import Dropdown from "@/components/dropdown";
+import useStore from "@/store";
+import { useEffect } from "react";
+import socket from "@/util/socket";
+import { useSession } from "next-auth/react";
 
-type SidebarProps = {
-    activePage: "chat" | "friends",
-    setActivePage: (page: "chat" | "friends") => void,
-}
-
-export default function Sidebar({ activePage, setActivePage }: SidebarProps) {
+export default function Sidebar() {
     const [dropdownVisible, setDropdownVisible] = useState(false);
+    const { activePage, setActivePage, fetchFriendRequests } = useStore();
+    const [friendRequestReceived, setFriendRequestReceived] = useState(false);
+    const session = useSession();
+
+    useEffect(() => {
+        socket.emit('joinRoom', session.data?.user.id);
+        socket.on('friendRequest', () => {
+            setFriendRequestReceived(true);
+            fetchFriendRequests();
+        });
+        return () => {
+            socket.off('friendRequest');
+            socket.off('joinRoom');
+        }
+    }, [session]);
+
+
     return (
         <div className="flex h-screen bg-gray-800 w-40 min-w-40 relative">
             <div className="flex flex-col items-center h-full bg-gray-800 w-full gap-10 py-5">
-                <button onClick={() => setDropdownVisible(!dropdownVisible)}
-                    className={`flex-none self-center w-10 h-10 ${!dropdownVisible ? "text-red-500" : "text-white"} hover:cursor-pointer hover:text-blue-500`}>
+                <button onClick={() => {
+                    if (!dropdownVisible) {
+                        setFriendRequestReceived(false);
+                    }
+                    setDropdownVisible(!dropdownVisible)
+                }}
+                    className={`flex-none self-center w-10 h-10 ${friendRequestReceived ? "text-red-500" : "text-white"} hover:cursor-pointer hover:text-blue-500`}>
                     <FontAwesomeIcon
                         className="w-10 h-10 text-blue"
                         icon={faBell} />
@@ -35,7 +56,7 @@ export default function Sidebar({ activePage, setActivePage }: SidebarProps) {
                 </button>
                 <Button onClick={() => signOut()} buttonType="logout" className="mt-auto">Logout</Button>
             </div>
-            <Dropdown dropdownVisible={dropdownVisible}/>
+            <Dropdown dropdownVisible={dropdownVisible} />
         </div>
     )
 }
