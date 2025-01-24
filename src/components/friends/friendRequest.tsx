@@ -1,10 +1,9 @@
 import acceptFriendRequest from "@/actions/acceptFriendRequest"
 import declineFriendRequest from "@/actions/declineFriendRequest"
 import Button from "@/components/shared/customButton"
-import ScrollWrapper from "@/components/shared/scrollWrapper"
 
 type FriendRequestProps = {
-    request: { id: string, user: UserDto }
+    request: FriendRequestType
     requestStatus: Map<string, string>
     setRequestStatus: React.Dispatch<React.SetStateAction<Map<string, string>>>
 }
