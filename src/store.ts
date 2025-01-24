@@ -2,27 +2,34 @@ import { create } from 'zustand'
 
 type StoreState = {
     selectedFriend: UserDto | null;
-    setSelectedFriend: (friendId: UserDto) => void;
+    setSelectedFriend: (friendId: UserDto | null) => void;
+
     messages: Map<string, MessageType[]>;
     addMessage: (message: MessageType) => void;
     setMessages: (friendshipId: string, messages: MessageType[]) => void;
+
     activePage: "chat" | "friends";
     setActivePage: (page: "chat" | "friends") => void;
+
     friendRequests: FriendRequestType[];
     fetchFriendRequests: () => void;
+
+    friends: UserDto[];
+    setFriends: (friends: UserDto[]) => void;
+    fetchFriends: () => void;
 };
 
 const useStore = create<StoreState>((set) => ({
     selectedFriend: null,
-    setSelectedFriend: (friend: UserDto) => set({ selectedFriend: friend }),
+    setSelectedFriend: (friend: UserDto | null) => set({ selectedFriend: friend }),
 
     messages: new Map(),
     addMessage: (message: MessageType) => {
         set((state) => {
-            const friendId = message.friendshipId;
+            const friendshipId = message.friendshipId;
             const updatedMessages = new Map(state.messages);
-            const currentMessages = updatedMessages.get(friendId) || [];
-            updatedMessages.set(friendId, [...currentMessages, message]); 
+            const currentMessages = updatedMessages.get(friendshipId) || [];
+            updatedMessages.set(friendshipId, [...currentMessages, message]); 
             return { messages: updatedMessages }; 
         });
     },
@@ -49,7 +56,22 @@ const useStore = create<StoreState>((set) => ({
         } catch (error) {
             console.error(error);
         }
-    }
+    },
+
+    friends: [],
+    setFriends: (friends) => set({ friends }),
+    fetchFriends: async () => {
+        try {
+            const response = await fetch('/api/friends');
+            if (!response.ok) {
+                throw new Error("Error fetching friends");
+            }
+            const data = await response.json();
+            set({ friends: data });
+        } catch (error) {
+            console.error(error);
+        }
+    },
 }));
 
 export default useStore;

@@ -25,15 +25,19 @@ app.prepare().then(() => {
             console.log(`User joined room: ${roomId}`);
         });
 
-        socket.on("privateMessage", async ({ content, senderId, receiverId, friendshipId }) => {
+        socket.on("message", ({ id, content, senderId, receiverId, friendshipId }) => {
+            const message = { content, senderId, receiverId, friendshipId };
+            socket.to(id).emit("message", message);
+        });
+
+        socket.on("privateMessage", ({ content, senderId, receiverId, friendshipId }) => {
             const message = { content, senderId, receiverId, friendshipId };
             socket.to(friendshipId).emit("privateMessage", message);
         });
 
         socket.on("friendRequest", (receiverId) => {
-            console.log(receiverId);
             socket.to(receiverId).emit("friendRequest", "You have a new friend request");
-        })
+        });
 
         socket.on("disconnect", () => {
             console.log("A user disconnected");
