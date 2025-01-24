@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import ChatInput from '@/components/chat/chatInput';
 import socket from '@/util/socket';
-import { saveMessage } from '@/actions/saveMessage';
 import { useSession } from 'next-auth/react';
 import ScrollWrapper from '@/components/shared/scrollWrapper';
 import useStore from '@/store';
@@ -25,7 +24,7 @@ export default function ChatBox() {
       }
     };
     fetchMessages();
-  }, [selectedFriend]);
+  }, [selectedFriend, setMessages]);
 
   useEffect(() => {
     if (selectedFriend) {
@@ -45,20 +44,8 @@ export default function ChatBox() {
     }
   }, [messages]);
 
-  const sendMessage = async (message: string) => {
-    const messageObj = {
-      content: message,
-      friendshipId: selectedFriend?.friendshipId || '',
-      receiverId: selectedFriend?.id || '',
-      senderId: session.data?.user.id || ''
-    };
-    socket.emit('privateMessage', messageObj);
-    await saveMessage(messageObj);
-    addMessage(messageObj);
-  }
-
   const currentMessages = messages.get(selectedFriend?.friendshipId || '') || [];
-  
+
   return (
     <div className="flex flex-col w-3/4 p-4 rounded-md">
       <ScrollWrapper>
@@ -74,7 +61,7 @@ export default function ChatBox() {
         <div ref={messagesEndRef} />
       </ScrollWrapper>
       {selectedFriend && (
-        <ChatInput sendMessage={sendMessage} />
+        <ChatInput />
       )}
     </div>
   )

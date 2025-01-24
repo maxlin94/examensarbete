@@ -1,20 +1,29 @@
 import { useState } from 'react';
+import useStore from '@/store';
+import socket from '@/util/socket';
+import { saveMessage } from '@/actions/saveMessage';
+import { useSession } from 'next-auth/react';
 
-type ChatInputProps = {
-    sendMessage: (message: string) => void;
-}
-
-export default function ChatInput({ sendMessage }: ChatInputProps) {
+export default function ChatInput() {
     const [input, setInput] = useState('');
     const [messageLoading, setMessageLoading] = useState(false);
+    const { selectedFriend, addMessage } = useStore();
+    const session = useSession();
 
-    const handleSendMessage = () => {
-        if (input.trim()) {
-            setMessageLoading(true);
-            sendMessage(input);
-            setInput('');
-            setMessageLoading(false);
-        }
+    const sendMessage = async (message: string) => {
+        setMessageLoading(true);
+        const messageObj = {
+            content: message,
+            friendshipId: selectedFriend?.friendshipId || '',
+            receiverId: selectedFriend?.id || '',
+            senderId: session.data?.user.id || ''
+        };
+        socket.emit('privateMessage', messageObj);
+        socket.emit('message', { id: selectedFriend?.id, ...messageObj });
+        await saveMessage(messageObj);
+        addMessage(messageObj);
+        setInput('');
+        setMessageLoading(false);
     }
 
     return (
@@ -25,13 +34,13 @@ export default function ChatInput({ sendMessage }: ChatInputProps) {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !messageLoading) handleSendMessage();
+                    if (e.key === 'Enter' && !messageLoading) sendMessage(input);
                 }}
             />
             <button
                 disabled={messageLoading}
                 className={`p-2 bg-blue-500 text-white rounded-r-md ${messageLoading && 'opacity-50'}`}
-                onClick={() => handleSendMessage}>
+                onClick={() => sendMessage(input)}>
                 Send
             </button>
         </div>
