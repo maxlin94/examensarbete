@@ -1,6 +1,7 @@
 import acceptFriendRequest from "@/actions/acceptFriendRequest"
 import declineFriendRequest from "@/actions/declineFriendRequest"
 import Button from "@/components/shared/customButton"
+import useStore from "@/store"
 
 type FriendRequestProps = {
     request: FriendRequestType
@@ -9,6 +10,8 @@ type FriendRequestProps = {
 }
 
 export default function FriendRequest({ request, requestStatus, setRequestStatus }: FriendRequestProps) {
+    const { fetchFriends } = useStore();
+
     const handleStatusChange = async (id: string, status: string, action: () => Promise<void>) => {
         try {
             await action();
@@ -17,6 +20,9 @@ export default function FriendRequest({ request, requestStatus, setRequestStatus
                 newStatus.set(id, status);
                 return newStatus;
             });
+            if(status === "accepted") {
+                fetchFriends();
+            }
         } catch (error) {
             console.error(error);
         }
