@@ -46,19 +46,19 @@ export default function FriendList({ selectedFriend, setSelectedFriend, messages
     }, [messages, selectedFriend]);
 
     return (
-        <div className="flex flex-col w-1/4 border-2 border-slate-500 h-full rounded-md">
+        <div className="flex flex-col w-1/4 min-w-fit border-2 border-slate-500 h-full rounded-md">
             {friends.map((friend: UserDto) => (
                 <div
                     key={friend.id}
-                    className={`p-2 text-lg cursor-pointer ${selectedFriend?.id === friend.id ? 'bg-slate-500' : ''}`}
+                    className={`p-2 text-lg cursor-pointer text-wrap break-all ${selectedFriend?.id === friend.id ? 'bg-slate-500' : ''}`}
                     onClick={() => {
                         if(friend.id !== selectedFriend?.id) setSelectedFriend(friend)}}
                 >
-                    {friend.name}
+                    {friend.name.length > 20 ? friend.name.slice(0, 20) + "..." : friend.name}
                     {friend.lastMessage &&
                         <div className="text-sm italic">
                             {friend.lastMessage.senderId === session?.data?.user.id ? "You: " : "Them: "}
-                            {friend.lastMessage.content}
+                            {friend.lastMessage.content.length > 20 ? friend.lastMessage.content.slice(0, 20) + "..." : friend.lastMessage.content}
                         </div>}
                 </div>
             ))}

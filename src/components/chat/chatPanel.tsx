@@ -9,7 +9,7 @@ export default function ChatPanel() {
   const [messages, setMessages] = useState<MessageType[]>([]);
 
   return (
-    <div className="flex w-5/6 bg-slate-600 m-auto rounded-md h-[95%]">
+    <div className="flex w-11/12 bg-slate-600 m-auto rounded-md h-[95%]">
       <FriendList
         selectedFriend={selectedFriend}
         setSelectedFriend={setSelectedFriend}
