@@ -10,32 +10,35 @@ import socket from "@/util/socket";
 import { useSession } from "next-auth/react";
 
 export default function Sidebar() {
-    const { activePage, setActivePage, fetchFriendRequests, addMessage, selectedFriend } = useStore();
+    const { activePage, setActivePage, fetchFriendRequests, addMessage, selectedFriend, setSelectedFriend } = useStore();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [friendRequestReceived, setFriendRequestReceived] = useState(false);
     const [messageReceived, setMessageReceived] = useState(false);
     const session = useSession();
 
+    const addMessageIfNotSameRoom = (message: MessageType) => {
+        if (message.friendshipId !== selectedFriend?.friendshipId) {
+            setMessageReceived(true);
+            addMessage(message);
+        }
+    }
+
     useEffect(() => {
         if (session.data?.user.id) {
             socket.emit('joinRoom', session.data?.user.id);
             socket.on('friendRequest', () => {
-                setFriendRequestReceived(true);
                 fetchFriendRequests();
+                setFriendRequestReceived(false);
             });
             socket.on('message', (message: MessageType) => {
-                if (message.friendshipId !== selectedFriend?.friendshipId) {
-                    setMessageReceived(true);
-                    addMessage(message);
-                }
+                addMessageIfNotSameRoom(message);
             });
         }
         return () => {
             socket.off('friendRequest');
             socket.off('message');
         }
-    }, [session, selectedFriend, addMessage, fetchFriendRequests]);
-
+    }, [session, fetchFriendRequests, addMessageIfNotSameRoom]);
 
     return (
         <div className="flex h-screen bg-gray-800 w-40 min-w-40 relative">
@@ -62,7 +65,10 @@ export default function Sidebar() {
                 </button>
                 <button className={`${activePage === "friends" ? "text-blue-500" : "text-white"} flex-none self-center w-10 h-10 hover:cursor-pointer hover:text-blue-500`}>
                     <FontAwesomeIcon
-                        onClick={() => setActivePage("friends")}
+                        onClick={() => {
+                            setActivePage("friends")
+                            setSelectedFriend(null);
+                        }}
                         className="w-10 h-10"
                         icon={faUserFriends} />
                 </button>

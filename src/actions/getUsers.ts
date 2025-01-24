@@ -3,7 +3,7 @@
 import prisma from "@/util/prisma";
 import { validateUser, getUsersByName, getFriendsByUserId } from "@/util/user";
 
-export async function getUsers(name: string): Promise<UserDto[]> {
+export async function getUsers(name: string): Promise<FriendType[]> {
     if (!name || name.trim() === "") {
         throw new Error("Name cannot be blank");
     }
@@ -18,15 +18,17 @@ export async function getUsers(name: string): Promise<UserDto[]> {
         const users = await getUsersByName(name, currentUser.id);
         const friendships = await getFriendsByUserId(currentUser.id);
 
-        const friendSet = new Set(
-            friendships.map((friendship) =>
-                friendship.userId === currentUser.id ? friendship.friendId : friendship.userId
-            )
+        const friendMap = new Map(
+            friendships.map((friendship) => [
+                friendship.userId === currentUser.id ? friendship.friendId : friendship.userId,
+                friendship.id,
+            ])
         );
 
         const sanitized = await Promise.all(
             users.map(async (user) => {
-                const isFriend = friendSet.has(user.id);
+                const friendshipId = friendMap.get(user.id);
+                const isFriend = friendMap.has(user.id);
 
                 const friendRequestExists = await prisma.friendRequest.findFirst({
                     where: {
@@ -39,6 +41,7 @@ export async function getUsers(name: string): Promise<UserDto[]> {
                     name,
                     id,
                     isFriend,
+                    friendshipId,
                     isFriendRequestSent: !!friendRequestExists,
                 };
             })
