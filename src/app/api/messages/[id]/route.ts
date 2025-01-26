@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/util/prisma";
 import { validateUser } from "@/util/user";
 
-export async function GET(_: Request, { params }: { params: { id: string } }) {
+export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const user = await validateUser();
         const { id } = await params;
