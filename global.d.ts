@@ -9,7 +9,7 @@ declare global {
         id: string;
         isFriend?: boolean;
         isFriendRequestSent?: boolean;
-        friendshipId?: string;
+        friendshipId: string;
         lastMessage?: MessageType | null;
     }
 
