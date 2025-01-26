@@ -1,10 +1,9 @@
 "use server";
 
-import prisma from "@/util/prisma";
-import { validateUser, getUsersByName, getFriendsByUserId } from "@/util/user";
+import { validateUser, getUsersByName } from "@/util/user";
 
-export async function getUsers(name: string): Promise<FriendType[]> {
-    if (!name || name.trim() === "") {
+export async function getUsers(name: string): Promise<UserWithRelations[]> {
+    if (!name?.trim()) {
         throw new Error("Name cannot be blank");
     }
 
@@ -15,41 +14,26 @@ export async function getUsers(name: string): Promise<FriendType[]> {
     }
 
     try {
-        const users = await getUsersByName(name, currentUser.id);
-        const friendships = await getFriendsByUserId(currentUser.id);
-
-        const friendMap = new Map(
-            friendships.map((friendship) => [
-                friendship.userId === currentUser.id ? friendship.friendId : friendship.userId,
-                friendship.id,
-            ])
-        );
-
-        const sanitized = await Promise.all(
-            users.map(async (user) => {
-                const friendshipId = friendMap.get(user.id);
-                const isFriend = friendMap.has(user.id);
-
-                const friendRequestExists = await prisma.friendRequest.findFirst({
-                    where: {
-                        senderId: currentUser.id,
-                        receiverId: user.id,
-                    },
-                });
-                const { name, id } = user;
-                return {
-                    name,
-                    id,
-                    isFriend,
-                    friendshipId,
-                    isFriendRequestSent: !!friendRequestExists,
-                };
-            })
-        );
-
-        return sanitized;
-    } catch (e) {
-        console.log(e);
+        const users: UserWithRelations[] = await getUsersByName(name, currentUser.id);
+        return users.map((user: UserWithRelations) => {
+            const friendships = [...user.friends || [], ...user.asFriend || []];
+            const isRequestSent = user.receivedRequests?.some(
+                (request) => request.senderId === currentUser.id
+            );
+            const isFriend = friendships.some((friendship) => 
+                friendship.userId === currentUser.id || friendship.friendId === currentUser.id);
+            const friendshipId = friendships.find((friendship) => 
+                friendship.userId === currentUser.id || friendship.friendId === currentUser.id)?.id;
+            return {
+                id: user.id,
+                name: user.name,
+                friendshipId,
+                isFriendRequestSent: isRequestSent,
+                isFriend
+            };
+        });
+    } catch (error) {
+        console.error(error);
         throw new Error("Internal server error");
     }
 }

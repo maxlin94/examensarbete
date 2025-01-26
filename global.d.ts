@@ -2,20 +2,29 @@ declare global {
     type UserDto = {
         id: string;
         name: string;
+        friendshipId?: string;
+        isFriend?: boolean;
+        isFriendRequestSent?: boolean;
+    }
+
+    type UserWithRelations = UserDto & {
+        receivedRequests?: FriendRequestType[];
+        friends?: FriendshipType[];
+        asFriend?: FriendshipType[];
     }
 
     type FriendType = {
         name: string;
         id: string;
-        isFriend?: boolean;
-        isFriendRequestSent?: boolean;
         friendshipId: string;
         lastMessage?: MessageType | null;
     }
 
     type FriendRequestType = {
         id: string;
-        user: UserDto;
+        senderId: string;
+        receiverId: string;
+        user?: UserDto;
     };
 
     type MessageType = {
@@ -26,6 +35,12 @@ declare global {
         sentByUser?: boolean;
         createdAt?: Date;
     };
+
+    type FriendshipType = {
+        id: string;
+        userId: string;
+        friendId: string;
+    }
 }
 
 export {};
