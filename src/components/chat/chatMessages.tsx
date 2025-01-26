@@ -1,12 +1,10 @@
 import useStore from '@/store';
-import { useSession } from 'next-auth/react';
 import { useRef, useEffect, useMemo } from 'react';
 
 export default function ChatMessages() {
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
     const { messages, selectedFriend } = useStore();
-    const session = useSession();
-    
+
     const currentMessages = useMemo(() => {
         return messages.get(selectedFriend?.friendshipId || '') || [];
     }, [messages, selectedFriend]);
@@ -17,10 +15,10 @@ export default function ChatMessages() {
 
     return (
         <>
-            {currentMessages.map((msg: MessageType, index) => (
+            {selectedFriend && currentMessages.map((msg: MessageType, index) => (
                 <div
                     key={index}
-                    className={`m-2 relative rounded-md ${msg.senderId === session.data?.user.id ? 'text-right' : 'text-left'
+                    className={`m-2 relative rounded-md ${msg.senderId === selectedFriend.id ? 'text-left' : 'text-right'
                         }`}
                 >
                     <span className="inline-block p-2 rounded-md bg-slate-800 break-all">{msg.content}</span>
