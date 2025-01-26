@@ -28,7 +28,7 @@ export default function Sidebar() {
             socket.off('friendRequest');
             socket.off('privateMessage');
         }
-    }, [session.data?.user.id, addMessage, fetchFriendRequests, fetchMessages, setMessageReceived]);
+    }, [session.data?.user, addMessage, fetchFriendRequests, fetchMessages, setMessageReceived]);
 
 
     return (
