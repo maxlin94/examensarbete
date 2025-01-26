@@ -8,11 +8,7 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
         const { id } = await params;
         if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         const messages = await prisma.friendship.findFirst({
-            where: {
-                OR: [
-                    { userId: user.id, friendId: id },
-                    { userId: id, friendId: user.id }
-                ]
+            where: { id: id
             },
             select: {
                 messages: {
