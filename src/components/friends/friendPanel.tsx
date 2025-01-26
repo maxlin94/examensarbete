@@ -5,13 +5,13 @@ import UserSearchBar from "./userSearchBar"
 import Friend from "@/components/friends/friend"
 
 export default function FriendPanel() {
-    const [friends, setFriends] = useState<UserDto[] | []>([]);
+    const [users, setUsers] = useState<FriendType[] | []>([]);
     return (
         <div>
-            <UserSearchBar setFriends={setFriends} />
+            <UserSearchBar setUsers={setUsers} />
             <div className="flex flex-col gap-2">
-                {friends.length > 0 && friends.map((friend) => (
-                    <Friend key={friend.id} user={friend} />
+                {users.length > 0 && users.map((user) => (
+                    <Friend key={user.id} user={user} />
                 ))}
             </div>
         </div>

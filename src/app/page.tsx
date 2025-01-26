@@ -1,6 +1,6 @@
 "use client";
 
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/components/sidebar/sidebar";
 import FriendPanel from "@/components/friends/friendPanel";
 import ChatPanel from "@/components/chat/chatPanel";
 import useStore from "@/store";

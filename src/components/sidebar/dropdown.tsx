@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ScrollWrapper from "@/components/shared/scrollWrapper";
-import FriendRequest from "@/components/friends/friendRequest";
+import FriendRequest from "@/components/sidebar/friendRequest";
 import useStore from "@/store";
 
 type DropdownProps = {
@@ -8,8 +8,12 @@ type DropdownProps = {
 }
 
 export default function Dropdown({ dropdownVisible }: DropdownProps) {
-    const { friendRequests } = useStore();
+    const { friendRequests, fetchFriendRequests } = useStore();
     const [requestStatus, setRequestStatus] = useState(new Map())
+
+    useEffect(() => {
+        fetchFriendRequests();
+    }, [fetchFriendRequests])
 
     return (
         <ScrollWrapper className={`${dropdownVisible ? "" : "hidden"} absolute z-20 left-40 w-[350px] min-h-[300px] max-h-96 bg-gray-800 border-l-2 border-slate-500 rounded-br-md gap-2`}>

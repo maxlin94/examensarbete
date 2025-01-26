@@ -6,6 +6,7 @@ import { Tooltip } from 'react-tooltip';
 import Image from 'next/image';
 import 'react-tooltip/dist/react-tooltip.css';
 import socket from "@/util/socket";
+import useStore from "@/store";
 
 type FriendProps = {
     user: UserDto;
@@ -13,8 +14,25 @@ type FriendProps = {
 
 export default function Friend({ user }: FriendProps) {
     const [sentRequests, setSentRequests] = useState<string[]>([]);
+    const { setActivePage, setSelectedFriend, messages, fetchMessages } = useStore();
 
-    const handleClick = async (id: string) => {
+    const handleOpenChat = async (user: FriendType) => {
+        if(messages.has(user.friendshipId)) {
+            await fetchMessages(user.friendshipId);
+        }
+        setSelectedFriend(mapToFriendType(user));
+        setActivePage('chat');
+    }
+
+    const mapToFriendType = (user: UserDto): FriendType => {
+        return {
+            id: user.id,
+            name: user.name,
+            friendshipId: user.friendshipId || '',
+        }
+    }
+
+    const handleSendFriendRequest = async (id: string) => {
         try {
             await sendFriendRequest(id);
             setSentRequests((prev) => [...prev, id]);
@@ -32,12 +50,12 @@ export default function Friend({ user }: FriendProps) {
                 <span>{user.name}</span>
             </div>
             {user.isFriend ?
-                <button className="text-blue-500">
+                <button onClick={() => handleOpenChat(mapToFriendType(user))} className="text-blue-500">
                     <FontAwesomeIcon icon={faMessage} />
                 </button> :
                 <button
                     disabled={user.isFriendRequestSent || isRequestSent}
-                    onClick={() => handleClick(user.id)}
+                    onClick={() => handleSendFriendRequest(user.id)}
                     className={`${user.isFriendRequestSent || isRequestSent ? "text-gray-300" : "text-blue-500"}`}
                     data-tooltip-id={`tooltip-${user.id}`}
                     data-tooltip-content={isRequestSent || user.isFriendRequestSent ? 'Friend request already sent' : ''}>
