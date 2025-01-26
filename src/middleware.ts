@@ -1,9 +1,9 @@
-import {NextResponse, NextRequest} from "next/server";
-import {getToken} from "next-auth/jwt";
+import { NextResponse, NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
     const url = req.nextUrl.clone();
-    const token = await getToken({req, secret: process.env.NEXTAUTH_SECRET});
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
     if (url.pathname === "/login" || url.pathname === "/signup") {
         if (token) {
