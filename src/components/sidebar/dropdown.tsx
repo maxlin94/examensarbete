@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ScrollWrapper from "@/components/shared/scrollWrapper";
-import FriendRequest from "@/components/friends/friendRequest";
+import FriendRequest from "@/components/sidebar/friendRequest";
 import useStore from "@/store";
 
 type DropdownProps = {
