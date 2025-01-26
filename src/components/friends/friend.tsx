@@ -9,16 +9,27 @@ import socket from "@/util/socket";
 import useStore from "@/store";
 
 type FriendProps = {
-    user: FriendType;
+    user: UserDto;
 }
 
 export default function Friend({ user }: FriendProps) {
     const [sentRequests, setSentRequests] = useState<string[]>([]);
-    const { setActivePage, setSelectedFriend } = useStore();
+    const { setActivePage, setSelectedFriend, messages, fetchMessages } = useStore();
 
     const handleOpenChat = async (user: FriendType) => {
-        setSelectedFriend(user);
+        if(messages.has(user.friendshipId)) {
+            await fetchMessages(user.friendshipId);
+        }
+        setSelectedFriend(mapToFriendType(user));
         setActivePage('chat');
+    }
+
+    const mapToFriendType = (user: UserDto): FriendType => {
+        return {
+            id: user.id,
+            name: user.name,
+            friendshipId: user.friendshipId || '',
+        }
     }
 
     const handleSendFriendRequest = async (id: string) => {
@@ -39,7 +50,7 @@ export default function Friend({ user }: FriendProps) {
                 <span>{user.name}</span>
             </div>
             {user.isFriend ?
-                <button onClick={() => handleOpenChat(user)} className="text-blue-500">
+                <button onClick={() => handleOpenChat(mapToFriendType(user))} className="text-blue-500">
                     <FontAwesomeIcon icon={faMessage} />
                 </button> :
                 <button
