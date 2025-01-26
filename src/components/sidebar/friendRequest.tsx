@@ -20,7 +20,7 @@ export default function FriendRequest({ request, requestStatus, setRequestStatus
                 newStatus.set(id, status);
                 return newStatus;
             });
-            if(status === "accepted") {
+            if (status === "accepted") {
                 fetchFriends();
             }
         } catch (error) {
@@ -32,10 +32,11 @@ export default function FriendRequest({ request, requestStatus, setRequestStatus
 
     return (
         <>
-            {frStatus ?
+            {frStatus && request.user &&
                 <li className="list-none flex m-auto items-center justify-between bg-slate-700 rounded-md my-2 w-fit p-2 gap-2 text-wrap">
                     <p>You {`${frStatus} ${request.user.name}'s`} friend request</p>
-                </li> :
+                </li>}
+            {!frStatus && request.user &&
                 <li className={`flex items-center justify-between bg-slate-700 rounded-md p-2 m-2 gap-2 text-wrap`}>
                     <div>
                         <p className="break-all inline">{request.user.name}</p>

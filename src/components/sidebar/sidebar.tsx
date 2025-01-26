@@ -8,7 +8,7 @@ import socket from "@/util/socket";
 
 export default function Sidebar() {
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const { fetchFriendRequests, addMessage, messages, setMessageReceived, fetchMessages } = useStore();
+    const { fetchFriendRequests, addMessage, messages, setMessageReceived, fetchMessages, selectedFriend } = useStore();
     const session = useSession();
 
     useEffect(() => {
@@ -23,7 +23,9 @@ export default function Sidebar() {
                 await fetchMessages(message.friendshipId);
             }
             addMessage(message);
-            setMessageReceived(true);
+            if(selectedFriend?.id !== message.senderId) {
+                setMessageReceived(true);
+            }
         });
         socket.on('friendRequest', () => {
             fetchFriendRequests();
@@ -32,7 +34,7 @@ export default function Sidebar() {
             socket.off('friendRequest');
             socket.off('privateMessage');
         }
-    }, [messages, addMessage, setMessageReceived, fetchFriendRequests, fetchMessages]);
+    }, [messages, selectedFriend, addMessage, setMessageReceived, fetchFriendRequests, fetchMessages]);
 
 
     return (
