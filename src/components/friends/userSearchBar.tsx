@@ -13,7 +13,15 @@ export default function UserSearchBar({ setUsers }: UserSearchBarProps) {
             return;
         };
         try {
-            const users = await getUsers(e.target.value);
+            const users = (await getUsers(e.target.value)).map((user) => {
+                return {
+                    id: user.id,
+                    name: user.name,
+                    friendshipId: user.friendshipId || '',
+                    isFriendRequestSent: user.isFriendRequestSent,
+                    isFriend: user.isFriend,
+                }
+            });
             setUsers(users);
         } catch (e) {
             console.error('Error fetching users:', e);
