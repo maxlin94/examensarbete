@@ -12,23 +12,27 @@ export default function Sidebar() {
     const session = useSession();
 
     useEffect(() => {
-        if(!session.data?.user) return;
+        if (!session.data?.user) return;
         socket.emit('joinRoom', session.data?.user.id);
-        socket.on('friendRequest', () => {
-            fetchFriendRequests();
-        });
+    }, [session.data?.user]);
+
+    useEffect(() => {
         socket.on('privateMessage', async (message: MessageType) => {
+            console.log('message received')
             if (!messages.has(message.friendshipId)) {
                 await fetchMessages(message.friendshipId);
             }
             addMessage(message);
             setMessageReceived(true);
         });
+        socket.on('friendRequest', () => {
+            fetchFriendRequests();
+        });
         return () => {
             socket.off('friendRequest');
             socket.off('privateMessage');
         }
-    }, [session.data?.user, addMessage, fetchFriendRequests, fetchMessages, setMessageReceived]);
+    }, [messages, addMessage, setMessageReceived, fetchFriendRequests, fetchMessages]);
 
 
     return (
