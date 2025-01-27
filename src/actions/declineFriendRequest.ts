@@ -21,7 +21,7 @@ export default async function declineFriendRequest(id: string) {
         }
 
         if (friendRequest.receiverId !== user?.id) {
-            throw new Error("You are not authorized to accept this friend request.");
+            throw new Error("You are not authorized to decline this friend request.");
         }
 
         await prisma.friendRequest.delete({

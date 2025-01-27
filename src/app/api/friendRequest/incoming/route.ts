@@ -2,11 +2,15 @@
 
 import { NextResponse } from "next/server";
 import prisma from "@/util/prisma";
-import { validateUser } from "@/util/user";
+import { getServerSession } from "next-auth";
 
 export async function GET() {
     try {
-        const user = await validateUser();
+        const session = await getServerSession();
+        if (!session || !session.user) {
+            return NextResponse.json({ error: "Unauthorized.", status: 401 });
+        }
+        const user = session.user;
         const friendRequests = await prisma.friendRequest.findMany({
             
             where: {
@@ -25,5 +29,6 @@ export async function GET() {
         return NextResponse.json(friendRequests);
     } catch (error) {
         console.log(error);
+        return NextResponse.json({ error: "Internal server error.", status: 500 });
     }
 }

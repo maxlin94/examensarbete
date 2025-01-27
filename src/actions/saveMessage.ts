@@ -20,8 +20,7 @@ export async function saveMessage(message: MessageType) {
             ],
         },
         select: {
-            id: true,
-            messages: true
+            id: true
         },
     });
     if (!friendship) return;
