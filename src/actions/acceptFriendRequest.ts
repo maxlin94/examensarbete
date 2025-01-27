@@ -5,8 +5,8 @@ import { validateUser } from "@/util/user";
 
 export default async function acceptFriendRequest(id: string) {
     try {
-        const user = await validateUser();
-        if (!user) {
+        const userId = await validateUser();
+        if (!userId) {
             throw new Error("User not found.");
         }
 
@@ -20,13 +20,13 @@ export default async function acceptFriendRequest(id: string) {
             throw new Error("Friend request not found.");
         }
 
-        if (friendRequest.receiverId !== user?.id) {
+        if (friendRequest.receiverId !== userId) {
             throw new Error("You are not authorized to accept this friend request.");
         }
 
         await prisma.friendship.create({
             data: {
-                userId: user.id,
+                userId: userId,
                 friendId: friendRequest.senderId,
             },
         });

@@ -1,7 +1,9 @@
-"use server"
+"use server";
 
 import prisma from "@/util/prisma";
-import {getServerSession} from "next-auth";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/util/authOptions";
+import { Session } from "next-auth";
 
 export async function getUsersByName(name: string, id: string): Promise<UserWithRelations[]> {
     return prisma.user.findMany({
@@ -52,22 +54,9 @@ export async function getUsersByName(name: string, id: string): Promise<UserWith
 }
 
 export async function validateUser() {
-    const session = await getServerSession();
-    if (!session || !session.user || !session.user.email) {
+    const session: Session | null = await getServerSession(authOptions);
+    if (!session || !session.user || !session.user.id) {
         return null;
     }
-
-    const email = session.user.email;
-
-
-    const user = await prisma.user.findUnique({
-        where: {
-            email: email,
-        },
-    });
-
-    if (!user) {
-        return null;
-    }
-    return user;
+    return session.user.id;
 }

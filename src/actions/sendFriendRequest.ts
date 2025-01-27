@@ -5,15 +5,15 @@ import { validateUser } from '@/util/user';
 
 export async function sendFriendRequest(friendId: string) {
     try {
-        const user = await validateUser();
-        if (!user || user.id === friendId) {
+        const userId = await validateUser();
+        if (!userId || userId === friendId) {
             return;
         }
 
         const existingRequest = await prisma.friendRequest.findFirst({
             where: {
                 receiverId: friendId,
-                senderId: user.id,
+                senderId: userId,
             },
         });
 
@@ -24,7 +24,7 @@ export async function sendFriendRequest(friendId: string) {
         await prisma.friendRequest.create({
             data: {
                 receiverId: friendId,
-                senderId: user.id,
+                senderId: userId,
             },
         });
     }

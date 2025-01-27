@@ -4,18 +4,18 @@ import prisma from "@/util/prisma";
 import { validateUser } from "@/util/user";
 
 export async function saveMessage(message: MessageType) {
-    const user = await validateUser();
-    if (!user) {
+    const userId = await validateUser();
+    if (!userId) {
         return;
     }
     const friendship = await prisma.friendship.findFirst({
         where: {
             OR: [
                 {
-                    AND: [{ userId: user.id }, { friendId: message.receiverId }],
+                    AND: [{ userId: userId }, { friendId: message.receiverId }],
                 },
                 {
-                    AND: [{ userId: message.receiverId }, { friendId: user.id }],
+                    AND: [{ userId: message.receiverId }, { friendId: userId }],
                 },
             ],
         },
@@ -27,7 +27,7 @@ export async function saveMessage(message: MessageType) {
     return prisma.message.create({
         data: {
             content: message.content,
-            senderId: user.id,
+            senderId: userId,
             receiverId: message.receiverId,
             friendshipId: friendship.id,
         },
