@@ -2,26 +2,14 @@
 
 import { NextResponse } from "next/server";
 import prisma from "@/util/prisma";
-import { getServerSession } from "next-auth";
+import { validateUser } from "@/util/user";
 
 export async function GET() {
     try {
-        const session = await getServerSession();
-        if (!session || !session.user) {
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-        }
-        const email = session.user.email;
-        const user = await prisma.user.findUnique({
-            where: {
-                email: email || "",
-            },
-            select: {
-                id: true,
-            },
-        });
+        const user = await validateUser();
 
         if (!user) {
-            return NextResponse.json({ message: "User not found" }, { status: 404 });
+            return NextResponse.json({ error: "Unauthorized.", status: 401 });
         }
 
         const userId = user.id;

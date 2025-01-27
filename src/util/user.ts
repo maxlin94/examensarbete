@@ -54,7 +54,7 @@ export async function getUsersByName(name: string, id: string): Promise<UserWith
 export async function validateUser() {
     const session = await getServerSession();
     if (!session || !session.user || !session.user.email) {
-        throw new Error("Unauthorized: You must be logged in.");
+        return null;
     }
 
     const email = session.user.email;
@@ -67,7 +67,7 @@ export async function validateUser() {
     });
 
     if (!user) {
-        throw new Error("User not found.");
+        return null;
     }
     return user;
 }

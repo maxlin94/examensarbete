@@ -2,15 +2,14 @@
 
 import { NextResponse } from "next/server";
 import prisma from "@/util/prisma";
-import { getServerSession } from "next-auth";
+import { validateUser } from "@/util/user";
 
 export async function GET() {
     try {
-        const session = await getServerSession();
-        if (!session || !session.user) {
+        const user = await validateUser();
+        if (!user) {
             return NextResponse.json({ error: "Unauthorized.", status: 401 });
         }
-        const user = session.user;
         const friendRequests = await prisma.friendRequest.findMany({
             
             where: {
