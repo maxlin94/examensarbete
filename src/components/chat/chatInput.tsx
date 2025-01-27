@@ -21,9 +21,9 @@ export default function ChatInput() {
         };
         socket.emit('privateMessage', messageObj);
         socket.emit('message', { id: selectedFriend?.id, ...messageObj });
+        setInput('');
         await saveMessage(messageObj);
         addMessage(messageObj);
-        setInput('');
         setMessageLoading(false);
     }
 

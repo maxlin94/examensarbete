@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
+import { NextApiRequest } from "next"
 import prisma from "@/util/prisma";
 import { validateUser } from "@/util/user";
 
-export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextApiRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const user = await validateUser();
         const { id } = await params;
+        const { searchParams } = new URL(req.url || '');
+        const limit = parseInt(searchParams.get('limit') || '20');
+        const offset = parseInt(searchParams.get('offset') || '0');
+
         if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         const messages = await prisma.friendship.findFirst({
             where: { id: id
@@ -13,8 +18,10 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
             select: {
                 messages: {
                     orderBy: {
-                        createdAt: 'asc'
+                        createdAt: 'desc'
                     },
+                    take: limit,
+                    skip: offset,
                     select: {
                         content: true,
                         senderId: true,
@@ -23,9 +30,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
                 }
             }
         });
-        return NextResponse.json(messages?.messages);
+        return NextResponse.json(messages?.messages.reverse());
     } catch (e) {
-        console.error("Error fetching users:", e);
+        console.error("Error fetching messages:", e);
         return NextResponse.json({ message: "Internal server error" }, { status: 500 });
     }
 }

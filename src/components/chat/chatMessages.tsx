@@ -1,17 +1,11 @@
 import useStore from '@/store';
-import { useRef, useEffect, useMemo } from 'react';
 
-export default function ChatMessages() {
-    const messagesEndRef = useRef<HTMLDivElement | null>(null);
-    const { messages, selectedFriend } = useStore();
+type ChatMessagesProps = {
+    currentMessages: MessageType[];
+}
 
-    const currentMessages = useMemo(() => {
-        return messages.get(selectedFriend?.friendshipId || '') || [];
-    }, [messages, selectedFriend]);
-
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
-    }, [currentMessages]);
+export default function ChatMessages({ currentMessages }: ChatMessagesProps) {
+    const { selectedFriend } = useStore();
 
     return (
         <>
@@ -24,7 +18,6 @@ export default function ChatMessages() {
                     <span className="inline-block p-2 rounded-md bg-slate-800 break-all">{msg.content}</span>
                 </div>
             ))}
-            <div ref={messagesEndRef} />
         </>
     )
 }
