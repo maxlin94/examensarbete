@@ -1,18 +1,18 @@
 "use server";
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/util/prisma";
-import { validateUser } from "@/util/user";
+import { getToken } from "next-auth/jwt";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     try {
-        const user = await validateUser();
+        const token = await getToken({ req });
 
-        if (!user) {
+        if (!token || !token.id) {
             return NextResponse.json({ error: "Unauthorized.", status: 401 });
         }
 
-        const userId = user.id;
+        const userId = token.id;
 
         const friendsWithLastMessages = await prisma.friendship.findMany({
             where: {

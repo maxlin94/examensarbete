@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { NextApiRequest } from "next"
 import prisma from "@/util/prisma";
-import { validateUser } from "@/util/user";
+import { getToken } from "next-auth/jwt";
 
 export async function GET(req: NextApiRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const user = await validateUser();
-        if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        const token = await getToken({req});
+        if (!token || !token.id) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         const { id } = await params;
         const { searchParams } = new URL(req.url || '');
         const limit = parseInt(searchParams.get('limit') || '20');
@@ -20,8 +20,8 @@ export async function GET(req: NextApiRequest, { params }: { params: Promise<{ i
                 messages: {
                     where: {
                         OR: [
-                            { senderId: user.id },
-                            { receiverId: user.id }
+                            { senderId: token.id },
+                            { receiverId: token.id }
                         ]
                     },
                     orderBy: {
