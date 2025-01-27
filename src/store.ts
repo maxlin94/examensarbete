@@ -8,7 +8,7 @@ type StoreState = {
     addMessage: (message: MessageType) => void;
     messageReceived: boolean;
     setMessageReceived: (received: boolean) => void;
-    fetchMessages: (friendshipId: string) => Promise<void>;
+    fetchMessages: (friendshipId: string, offset?: number) => Promise<number>;
 
     activePage: "chat" | "friends";
     setActivePage: (page: "chat" | "friends") => void;
@@ -39,18 +39,20 @@ const useStore = create<StoreState>((set) => ({
     },
     messageReceived: false,
     setMessageReceived: (received: boolean) => set({ messageReceived: received }),
-    fetchMessages: async (friendshipId: string) => {
+    fetchMessages: async (friendshipId: string, offSet = 0, limit = 20) => {
         try {
-            const response = await fetch(`/api/messages/${friendshipId}`);
+            const response = await fetch(`/api/messages/${friendshipId}?offset=${offSet}&limit=${limit}`);
             if (!response.ok) throw new Error("Failed to fetch messages");
             const data = await response.json();
             set((state) => {
                 const updatedMessages = new Map(state.messages);
-                updatedMessages.set(friendshipId, data);
+                const currentMessages = updatedMessages.get(friendshipId) || [];
+                updatedMessages.set(friendshipId, [...data, ...currentMessages]);
                 return {
                     messages: updatedMessages
                 };
             });
+            return data.length;
         } catch (error) {
             console.error(error);
         }
