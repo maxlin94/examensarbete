@@ -24,9 +24,18 @@ export default async function declineFriendRequest(id: string) {
             throw new Error("You are not authorized to decline this friend request.");
         }
 
-        await prisma.friendRequest.delete({
+        await prisma.friendRequest.deleteMany({
             where: {
-                id: id,
+                OR: [
+                    {
+                        senderId: friendRequest.senderId,
+                        receiverId: friendRequest.receiverId,
+                    },
+                    {
+                        senderId: friendRequest.receiverId,
+                        receiverId: friendRequest.senderId,
+                    },
+                ]
             },
         });
     } catch (error) {
