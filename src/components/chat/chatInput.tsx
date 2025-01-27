@@ -34,8 +34,8 @@ export default function ChatInput() {
                 className="flex-grow p-2 text-black rounded-l-md"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !messageLoading) sendMessage(input);
+                onKeyDown={async (e) => {
+                    if (e.key === 'Enter' && !messageLoading) await sendMessage(input);
                 }}
             />
             <button

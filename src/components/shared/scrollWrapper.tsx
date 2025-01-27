@@ -1,7 +1,8 @@
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
+import { ReactNode } from "react";
 
-export default function ScrollWrapper({ children, className }: { children: React.ReactNode, className?: string }) {
+export default function ScrollWrapper({ children, className }: { children: ReactNode, className?: string }) {
     return (
         <div className={twMerge(clsx(`flex-grow overflow-y-auto 
         [&::-webkit-scrollbar]:w-2 

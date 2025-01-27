@@ -2,11 +2,12 @@ import acceptFriendRequest from "@/actions/acceptFriendRequest"
 import declineFriendRequest from "@/actions/declineFriendRequest"
 import Button from "@/components/shared/customButton"
 import useStore from "@/store"
+import { Dispatch, SetStateAction } from "react";
 
 type FriendRequestProps = {
     request: FriendRequestType
     requestStatus: Map<string, string>
-    setRequestStatus: React.Dispatch<React.SetStateAction<Map<string, string>>>
+    setRequestStatus: Dispatch<SetStateAction<Map<string, string>>>
 }
 
 export default function FriendRequest({ request, requestStatus, setRequestStatus }: FriendRequestProps) {
@@ -21,7 +22,7 @@ export default function FriendRequest({ request, requestStatus, setRequestStatus
                 return newStatus;
             });
             if (status === "accepted") {
-                fetchFriends();
+                await fetchFriends();
             }
         } catch (error) {
             console.error(error);

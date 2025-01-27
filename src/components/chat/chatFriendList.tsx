@@ -12,10 +12,10 @@ export default function FriendList() {
         fetch();
     }, [fetchFriends]);
 
-    const handleFriendClick = (friend: FriendType) => {
+    const handleFriendClick = async (friend: FriendType) => {
         setSelectedFriend(friend);
         if (!messages.has(friend.friendshipId)) {
-            fetchMessages(friend.friendshipId);
+            await fetchMessages(friend.friendshipId);
         }
     }
 

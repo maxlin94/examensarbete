@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 import useStore from '@/store';
 import socket from '@/util/socket';
 import { useSession } from 'next-auth/react';
+import { ReactNode } from "react";
 
-export default function SocketProvider ({ children }: { children: React.ReactNode}) {
+export default function SocketProvider ({ children }: { children: ReactNode}) {
     const { messages, selectedFriend, addMessage, setMessageReceived, fetchFriendRequests, fetchMessages } = useStore();
     const session = useSession();
 

@@ -55,7 +55,7 @@ export async function getUsersByName(name: string, id: string): Promise<UserWith
 
 export async function validateUser() {
     const session: Session | null = await getServerSession(authOptions);
-    if (!session || !session.user || !session.user.id) {
+    if (!session || !session.user.id) {
         return null;
     }
     return session.user.id;
