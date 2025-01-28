@@ -17,7 +17,7 @@ export default function Friend({ user }: FriendProps) {
     const { setActivePage, setSelectedFriend, messages, fetchMessages } = useStore();
 
     const handleOpenChat = async (user: FriendType) => {
-        if(messages.has(user.friendshipId)) {
+        if(!messages.has(user.friendshipId)) {
             await fetchMessages(user.friendshipId);
         }
         setSelectedFriend(mapToFriendType(user));
