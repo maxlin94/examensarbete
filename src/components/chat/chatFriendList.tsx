@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import useStore from '@/store';
+import Image from 'next/image';
 
 
 export default function FriendList() {
@@ -34,11 +35,16 @@ export default function FriendList() {
             {friends.map((friend: FriendType) => (
                 <div
                     key={friend.id}
-                    className={`mx-1 mt-1 p-2 text-lg cursor-pointer text-wrap break-all rounded-md ${selectedFriend?.id === friend.id ? 'bg-slate-500' : 'bg-slate-800'}`}
+                    className={`flex mx-1 mt-1 p-2 cursor-pointer rounded-md ${selectedFriend?.id !== friend.id ? 'bg-slate-500' : 'bg-slate-800'}`}
                     onClick={() => handleFriendClick(friend)}
                 >
-                    {friend.name.length > 20 ? friend.name.slice(0, 20) + "..." : friend.name}
-                    {getLastMessage(friend)}
+                    <div className="self-center mx-2">
+                        <Image src="/images/placeholder.png" width="40" height="40" alt="User avatar" className="rounded-full" />
+                    </div>
+                    <div className="flex flex-col gap-1 text-wrap break-all text-lg">
+                        {friend.name.length > 20 ? friend.name.slice(0, 20) + "..." : friend.name}
+                        {getLastMessage(friend)}
+                    </div>
                 </div>
             ))}
         </div>
